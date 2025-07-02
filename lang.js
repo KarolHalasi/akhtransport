@@ -8,7 +8,7 @@ const translations = {
     contact: "Kontakt",
     login: "Prihlásenie",
     welcome: "Vitajte v AKH Transport",
-    intro: "Poskytujeme spoľahlivú cestnú dopravu do 3,5t v rámci SR a okolia."
+    intro: "Poskytujeme spoľahlivú cestnú dopravu do 3,5t v rámci SR."
   },
   hu: {
     home: "Főoldal",
@@ -17,8 +17,8 @@ const translations = {
     order: "Rendelés",
     contact: "Kapcsolat",
     login: "Bejelentkezés",
-    welcome: "Üdvözöljük az AKH Transportnál",
-    intro: "Megbízható közúti szállítást kínálunk 3,5 tonnáig Szlovákiában és környékén."
+    welcome: "Köszöntjük az AKH Transportnál",
+    intro: "Megbízható közúti szállítást kínálunk 3,5 tonnáig Szlovákiában."
   },
   en: {
     home: "Home",
@@ -28,7 +28,7 @@ const translations = {
     contact: "Contact",
     login: "Login",
     welcome: "Welcome to AKH Transport",
-    intro: "We provide reliable road transport up to 3.5 tons within Slovakia and surroundings."
+    intro: "We provide reliable road transport up to 3.5 tons within Slovakia."
   }
 };
 
