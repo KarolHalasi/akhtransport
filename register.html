@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="register_title">Registrácia</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <main>
+    <h1 data-i18n="register_title">Registrácia</h1>
+    <form id="registerForm">
+      <label><span data-i18n="name"></span><input type="text" name="name" required /></label>
+      <label><span data-i18n="email"></span><input type="email" name="email" required /></label>
+      <label><span data-i18n="password"></span><input type="password" name="password" required /></label>
+      <button type="submit" data-i18n="register_button"></button>
+    </form>
+    <p><a href="login.html" data-i18n="have_account"></a></p>
+  </main>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxD-bUWAFmlAxzrgvdl5meMc9GjIDz0XA",
+      authDomain: "akhtransapp.firebaseapp.com",
+      projectId: "akhtransapp",
+      storageBucket: "akhtransapp.appspot.com",
+      messagingSenderId: "960895665450",
+      appId: "1:960895665450:web:52d8efb64b76c2392602f5"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <script src="register.js"></script>
+  <script src="lang.js"></script>
+</body>
+</html>
