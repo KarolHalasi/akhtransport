@@ -27,6 +27,10 @@ const translations = {
     register_title: "Registrácia",
     register_button: "Registrovať sa",
     have_account: "Máte účet? Prihláste sa."
+
+    about: "O nás",
+    services: "Služby",
+    contact: "Kontakt", 
   },
   hu: {
     home: "Főoldal",
@@ -56,6 +60,10 @@ const translations = {
     register_title: "Regisztráció",
     register_button: "Regisztráció",
     have_account: "Már van fiókja? Jelentkezzen be."
+
+    about: "Rólunk",
+    services: "Szolgáltatások",
+    contact: "Kapcsolat",
   },
   en: {
     home: "Home",
@@ -85,6 +93,10 @@ const translations = {
     register_title: "Register",
     register_button: "Register",
     have_account: "Already have an account? Login."
+
+    about: "About",
+    services: "Services",
+    contact: "Contact",
   }
 };
 
