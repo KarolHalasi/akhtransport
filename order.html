@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="order_title">Objednať prepravu</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <header>
+    <a href="index.html"><img src="logo.png" alt="AKH Transport logo" class="logo" /></a>
+    <nav>
+      <ul>
+        <li><a href="index.html" data-i18n="home"></a></li>
+        <li><a href="order.html" data-i18n="order"></a></li>
+        <li><a href="dashboard.html" data-i18n="dashboard"></a></li>
+      </ul>
+    </nav>
+    <div class="lang-switcher">
+      <button onclick="setLanguage('sk')">SK</button>
+      <button onclick="setLanguage('hu')">HU</button>
+      <button onclick="setLanguage('en')">EN</button>
+    </div>
+  </header>
+  <main>
+    <h1 data-i18n="order_title"></h1>
+    <form id="orderForm">
+      <label><span data-i18n="name"></span><input type="text" name="name" required /></label>
+      <label><span data-i18n="email"></span><input type="email" name="email" required /></label>
+      <label><span data-i18n="pickup"></span><input type="text" name="pickup" required /></label>
+      <label><span data-i18n="delivery"></span><input type="text" name="delivery" required /></label>
+      <label><span data-i18n="date"></span><input type="datetime-local" name="datetime" required /></label>
+      <label><span data-i18n="note"></span><textarea name="note"></textarea></label>
+      <button type="submit" data-i18n="submit"></button>
+    </form>
+    <div id="thankYouMessage" style="display:none;" data-i18n="thank_you"></div>
+  </main>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxD-bUWAFmlAxzrgvdl5meMc9GjIDz0XA",
+      authDomain: "akhtransapp.firebaseapp.com",
+      projectId: "akhtransapp",
+      storageBucket: "akhtransapp.appspot.com",
+      messagingSenderId: "960895665450",
+      appId: "1:960895665450:web:52d8efb64b76c2392602f5"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <script src="order.js"></script>
+  <script src="lang.js"></script>
+</body>
+</html>
