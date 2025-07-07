@@ -6,3 +6,8 @@ const firebaseConfig = {
   messagingSenderId: "960895665450",
   appId: "1:960895665450:web:52d8efb64b76c2392602f5"
 };
+
+// Inicializuj Firebase len ak ešte nebol inicializovaný
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
