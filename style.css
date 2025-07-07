@@ -19,7 +19,7 @@ header {
 /* Logó külön rétegben */
 .logo-wrapper {
   position: absolute;
-  top: 0.5rem;
+  top: 1rem;
   left: 2rem;
   height: 100px;
   width: 100px;
@@ -37,7 +37,7 @@ header {
 }
 
 .logo {
-  height: 80px;
+  height: 100px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
