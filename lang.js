@@ -114,17 +114,21 @@ const translations = {
 function setLanguage(lang) {
   localStorage.setItem("lang", lang); // opcionális: megőrzi a választást újratöltés után
 
-  document.querySelectorAll("[data-i18n]").forEach(el => {
+document.querySelectorAll("[data-i18n]").forEach(el => {
   const key = el.getAttribute("data-i18n");
   const translation = translations[lang] && translations[lang][key];
   if (translation) {
     if (el.tagName.toLowerCase() === "title") {
       document.title = translation;
+    } else if (el.tagName.toLowerCase() === "input" || el.tagName.toLowerCase() === "textarea") {
+      // placeholder-t állítunk
+      el.placeholder = translation;
     } else {
       el.textContent = translation;
     }
   }
 });
+
 }  
 
 // Ha van mentett nyelv, használjuk azt, különben alapértelmezésként "sk"
