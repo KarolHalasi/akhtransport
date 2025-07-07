@@ -7,7 +7,7 @@ const translations = {
     logout: "Odhlásiť sa",
 
     welcome: "Vitajte v AKH Transport",
-    intro: "Poskytujeme spoľahlivú cestnú dopravu do 3,5t v rámci Slovenska a okolia.",
+    intro: "Sme rodinná firma dvoch bratov, ktorých spojila vášeň pre dopravu. Jeden z nás žije pre logistiku, druhý miluje šoférovanie – a práve z tejto kombinácie vznikla naša firma. Zabezpečujeme spoľahlivú prepravu dodávkou do 3,5 tony po celom Slovensku. Naša práca je pre nás osobná – ku každej zásielke pristupujeme s rovnakou starostlivosťou, akoby bola naša vlastná.",
 
     order_title: "Objednať prepravu",
     name: "Meno",
