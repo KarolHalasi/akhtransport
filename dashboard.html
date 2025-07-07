@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Môj účet</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .dashboard {
+      max-width: 800px;
+      margin: 2em auto;
+      padding: 1.5em;
+      background: #ffffffcc;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info {
+      margin-bottom: 2em;
+      text-align: center;
+    }
+
+    .user-info h2 {
+      margin-bottom: 0.3em;
+    }
+
+    .orders {
+      margin-top: 1em;
+    }
+
+    .order-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1em;
+      margin-bottom: 1em;
+      background: #f9f9f9;
+    }
+
+    .order-card p {
+      margin: 0.3em 0;
+    }
+
+    .delete-btn {
+      background-color: #cc0000;
+      color: #fff;
+      border: none;
+      padding: 0.4em 0.8em;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0.5em;
+    }
+
+    .delete-btn:hover {
+      background-color: #a80000;
+    }
+
+    .logout-btn {
+      background-color: #555;
+      color: white;
+      padding: 0.6em 1.2em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background-color: #333;
+    }
+
+    .lang-switcher {
+      text-align: center;
+      margin-top: 2em;
+    }
+
+    .lang-switcher button {
+      margin: 0 0.3em;
+    }
+  </style>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="user-info">
+      <h2 id="userName">Načítavam meno...</h2>
+      <p id="userEmail">email@example.com</p>
+      <button class="logout-btn" onclick="logout()">Odhlásiť sa</button>
+    </div>
+
+    <h3>Moje objednávky</h3>
+    <div id="ordersList" class="orders">
+      <p>Načítavam objednávky...</p>
+    </div>
+
+    <div class="lang-switcher">
+      <button onclick="setLanguage('sk')">SK</button>
+      <button onclick="setLanguage('hu')">HU</button>
+      <button onclick="setLanguage('en')">EN</button>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxD-bUWAFmlAxzrgvdl5meMc9GjIDz0XA",
+      authDomain: "akhtransapp.firebaseapp.com",
+      projectId: "akhtransapp",
+      storageBucket: "akhtransapp.appspot.com",
+      messagingSenderId: "960895665450",
+      appId: "1:960895665450:web:52d8efb64b76c2392602f5"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "auth.html";
+      } else {
+        document.getElementById("userName").textContent = user.displayName || "Používateľ";
+        document.getElementById("userEmail").textContent = user.email;
+        loadOrders(user.email);
+      }
+    });
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+
+    async function loadOrders(email) {
+      const list = document.getElementById("ordersList");
+      list.innerHTML = "";
+
+      try {
+        const snapshot = await db.collection("orders").where("email", "==", email).get();
+
+        if (snapshot.empty) {
+          list.innerHTML = "<p>Nemáte žiadne objednávky.</p>";
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "order-card";
+          card.innerHTML = `
+            <p><strong>Vyzdvihnutie:</strong> ${data.pickup || "-"}</p>
+            <p><strong>Doručenie:</strong> ${data.delivery || "-"}</p>
+            <p><strong>Dátum:</strong> ${data.date || "-"}</p>
+            <p><strong>Poznámka:</strong> ${data.note || "-"}</p>
+            <p><strong>Stav:</strong> ${data.status || "Čaká"}</p>
+            <p><strong>Cena:</strong> ${data.price ? data.price + " €" : "—"}</p>
+            <button class="delete-btn" onclick="deleteOrder('${doc.id}')">Zmazať</button>
+          `;
+          list.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Chyba pri načítaní:", error);
+        list.innerHTML = "<p>Chyba pri načítaní objednávok.</p>";
+      }
+    }
+
+    async function deleteOrder(id) {
+      if (confirm("Naozaj chcete zmazať túto objednávku?")) {
+        try {
+          await db.collection("orders").doc(id).delete();
+          loadOrders(auth.currentUser.email); // reload
+        } catch (err) {
+          alert("Chyba pri mazaní: " + err.message);
+        }
+      }
+    }
+  </script>
+
+  <script src="lang.js"></script>
+</body>
+</html>
