@@ -13,6 +13,7 @@ header {
   z-index: 1000;
   padding: 1rem 0;
   position: relative;
+  min-height: 100px;
 }
 
 /* Logó külön rétegben */
@@ -21,9 +22,17 @@ header {
   top: 0.5rem;
   left: 2rem;
   height: 80px;
+  max-width: 160px;
   display: flex;
   align-items: center;
   z-index: 10;
+  pointer-events: none;
+}
+
+.logo-wrapper a {
+  pointer-events: auto;
+  display: inline-block;
+  width: 100%;
 }
 
 .logo {
@@ -76,6 +85,7 @@ nav a {
   right: 2rem;
   display: flex;
   gap: 0.5rem;
+  z-index: 20;
 }
 
 .lang-switcher button {
@@ -97,12 +107,12 @@ main {
 /* Mobilbarát */
 @media (max-width: 768px) {
   .logo-wrapper {
-    position: relative;
-    top: 0;
-    left: 0;
-    justify-content: center;
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
     height: 60px;
-    margin-bottom: 0.5rem;
+    max-width: 120px;
+    margin-bottom: 0;
   }
 
   .header-container {
@@ -122,7 +132,6 @@ main {
   }
 
   .lang-switcher {
-    position: absolute;
     top: 1rem;
     right: 1rem;
   }
