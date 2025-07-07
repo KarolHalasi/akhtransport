@@ -6,52 +6,55 @@ body {
 }
 
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
-  flex-wrap: wrap; /* fontos, hogy a header is tudjon több sort */
+}
+
+.header-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 1rem;
 }
 
 .logo {
-  height: 80px;
+  height: 60px;
   object-fit: contain;
-  flex-shrink: 0; /* ne csökkenjen túl kicsire */
-  margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 nav {
-  flex: 1 1 auto; /* hogy kitöltse a helyet és törjön, ha kell */
+  flex: 1 1 auto;
 }
 
 nav ul {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 0;
   margin: 0;
-  flex-wrap: wrap; /* több sorba törés */
-  justify-content: flex-start; /* balra rendezés */
+  justify-content: center;
 }
 
 nav a {
   color: #003366;
   text-decoration: none;
   font-weight: bold;
-  white-space: nowrap; /* linkek ne törjenek */
+  white-space: nowrap;
 }
 
 .lang-switcher {
   display: flex;
   gap: 0.5rem;
-  flex-shrink: 0; /* ne csökkenjen össze */
-  margin-left: 1rem;
-  margin-top: 0.5rem; /* legyen kis távolság ha több sor lesz */
+  flex-shrink: 0;
 }
 
 .lang-switcher button {
@@ -65,35 +68,21 @@ nav a {
 
 main {
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Mobilon kisebb logo, header padding */
 @media (max-width: 768px) {
-  header {
-    padding: 1rem;
+  .header-container {
+    flex-direction: column;
+    align-items: center;
   }
 
   .logo {
-    height: 60px;
-    margin-bottom: 0.5rem;
+    height: 50px;
   }
 
-  .lang-switcher {
-    margin-left: 0;
-    width: 100%;
-    justify-content: flex-start;
-  }
-}
-
-/* Nagyobb kijelzők max szélesség és középre igazítás */
-@media (min-width: 1200px) {
-  header {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
+  nav ul {
+    justify-content: center;
   }
 }
