@@ -116,7 +116,7 @@ function setLanguage(lang) {
     }
   }
 });
-
+}  
 
 // Ha van mentett nyelv, használjuk azt, különben alapértelmezésként "sk"
 const savedLang = localStorage.getItem("lang") || "sk";
