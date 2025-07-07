@@ -1,42 +1,60 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f9f9f9;
+  color: #333;
+}
+
+header {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 .header-container {
   display: flex;
-  align-items: center;     /* függőlegesen középre */
-  justify-content: center; /* vízszintesen középre */
-  flex-wrap: nowrap;       /* ne törjenek sorba, egy sorban maradjanak */
+  align-items: center;
+  justify-content: center; /* középre rendezi a tartalmat vízszintesen */
+  flex-wrap: wrap;         /* törés engedélyezése ha nem fér el */
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  gap: 2rem;
+  gap: 2rem;               /* nagyobb távolság az elemek között */
 }
 
 .logo {
   height: 100px;
   object-fit: contain;
   flex-shrink: 0;
-  margin-left: 30px;       /* 30px jobbra tolás */
 }
 
 nav {
-  flex: 1 1 auto;
+  flex: 1 1 auto;          /* rugalmasan foglal helyet, de nem kevesebbet mint a tartalom */
   display: flex;
-  justify-content: center;
-  align-items: center;     /* függőleges középre a menü */
+  justify-content: center; /* a menüpontok középre rendezése */
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  flex-wrap: nowrap;       /* ne törjenek sorba */
+  flex-wrap: wrap;         /* törés engedélyezése ha nem fér ki */
   gap: 1.5rem;
   padding: 0;
   margin: 0;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* több sor esetén is középre */
 }
 
-/* Mobilon is egy sorban akarjuk, tehát nincs flex-wrap: wrap sem */
+nav a {
+  color: #003366;
+  text-decoration: none;
+  font-weight: bold;
+  white-space: nowrap;     /* ne törje meg a link szöveget */
+}
 
+/* Fix nyelvválasztó */
 .lang-switcher {
   position: absolute;
   top: 1rem;
@@ -54,11 +72,26 @@ nav ul {
   cursor: pointer;
 }
 
-/* Optional: ha túl szűk lenne mobilon, akkor lehet horizontális scroll */
-/* Ha nem szeretnéd, hagyd ki ezt a blokkot */
+/* Tartalom */
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-@media (max-width: 480px) {
+/* Mobilbarát */
+@media (max-width: 768px) {
   .header-container {
-    overflow-x: auto;
+    gap: 1rem;
+  }
+
+  nav {
+    width: 100%;           /* menü teljes szélesség */
+    justify-content: center;
+  }
+
+  nav ul {
+    justify-content: center;
+    gap: 1rem;
   }
 }
