@@ -27,6 +27,9 @@ const translations = {
     register_title: "Registrácia",
     register_button: "Registrovať sa",
     have_account: "Máte účet? Prihláste sa.",
+    placeholder_email: "Email",
+    placeholder_password: "Heslo",
+    placeholder_name: "Meno",
 
     about: "O nás",
     services: "Služby",
@@ -61,6 +64,9 @@ const translations = {
     register_title: "Regisztráció",
     register_button: "Regisztráció",
     have_account: "Már van fiókja? Jelentkezzen be.",
+    placeholder_email: "Email",
+    placeholder_password: "Jelszó",
+    placeholder_name: "Név",
 
     about: "Rólunk",
     services: "Szolgáltatások",
@@ -95,6 +101,9 @@ const translations = {
     register_title: "Register",
     register_button: "Register",
     have_account: "Already have an account? Login.",
+    placeholder_email: "Email",
+    placeholder_password: "Password",
+    placeholder_name: "Name",
 
     about: "About",
     services: "Services",
