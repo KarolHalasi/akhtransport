@@ -22,7 +22,7 @@ header {
   top: 0.5rem;
   left: 2rem;
   height: 80px;
-  max-width: 80px;
+  width: 80px;
   display: flex;
   align-items: center;
   z-index: 10;
