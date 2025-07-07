@@ -1,8 +1,8 @@
 .header-container {
   display: flex;
-  align-items: center;      /* függőlegesen középre */
-  justify-content: center;  /* vízszintesen középre */
-  flex-wrap: nowrap;        /* fejléc nem törik sorba, logó+nav egy sorban */
+  align-items: center;     /* függőlegesen középre */
+  justify-content: center; /* vízszintesen középre */
+  flex-wrap: nowrap;       /* ne törjenek sorba, egy sorban maradjanak */
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -14,20 +14,20 @@
   height: 100px;
   object-fit: contain;
   flex-shrink: 0;
-  margin-left: 30px;        /* 30px jobbra tolás */
+  margin-left: 30px;       /* 30px jobbra tolás */
 }
 
 nav {
   flex: 1 1 auto;
   display: flex;
   justify-content: center;
-  align-items: center;      /* függőleges középre */
+  align-items: center;     /* függőleges középre a menü */
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  flex-wrap: nowrap;        /* alapból ne törjenek */
+  flex-wrap: nowrap;       /* ne törjenek sorba */
   gap: 1.5rem;
   padding: 0;
   margin: 0;
@@ -35,13 +35,7 @@ nav ul {
   align-items: center;
 }
 
-/* Mobilon engedjük a menüpontok törését */
-@media (max-width: 768px) {
-  nav ul {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
+/* Mobilon is egy sorban akarjuk, tehát nincs flex-wrap: wrap sem */
 
 .lang-switcher {
   position: absolute;
@@ -58,4 +52,13 @@ nav ul {
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* Optional: ha túl szűk lenne mobilon, akkor lehet horizontális scroll */
+/* Ha nem szeretnéd, hagyd ki ezt a blokkot */
+
+@media (max-width: 480px) {
+  .header-container {
+    overflow-x: auto;
+  }
 }
