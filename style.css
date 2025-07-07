@@ -19,8 +19,8 @@ header {
 /* Logó külön rétegben */
 .logo-wrapper {
   position: absolute;
-  top: 1rem;
-  left: 2rem;
+  top: 0.5rem;
+  left: 4rem;
   height: 100px;
   width: 100px;
   display: flex;
@@ -122,6 +122,7 @@ main {
     flex-direction: column;
     gap: 1rem;
     padding: 0.5rem 0;
+    margin-left: 50px;
   }
 
   nav {
