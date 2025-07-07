@@ -132,7 +132,7 @@ main {
 
   nav ul {
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .lang-switcher {
