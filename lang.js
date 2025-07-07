@@ -7,9 +7,7 @@ const translations = {
     logout: "Odhlásiť sa",
 
     welcome: "Vitajte v AKH Transport",
-    intro: "Dvaja bratia, jedna dodávka a spoločná vášeň pre cestnú dopravu. Obaja milujeme šoférovanie, no život to zariadil tak, že jeden z nás viac sedí za volantom a druhý… za počítačom. Kým jeden brázdi cesty Slovenska, druhý má pod palcom logistiku a papierovačky. Spolu tvoríme zohraný tím, ktorý vám spoľahlivo doručí, čo treba – s dodávkou do 3,5 tony a úsmevom k tomu. Tešíme sa na spoluprácu! Karol a Attila
-
-",
+    intro: "Dvaja bratia, jedna dodávka a spoločná vášeň pre cestnú dopravu. Obaja milujeme šoférovanie, no život to zariadil tak, že jeden z nás viac sedí za volantom a druhý… za počítačom. Kým jeden brázdi cesty Slovenska, druhý má pod palcom logistiku a papierovačky. Spolu tvoríme zohraný tím, ktorý vám spoľahlivo doručí, čo treba – s dodávkou do 3,5 tony a úsmevom k tomu. Tešíme sa na spoluprácu! Karol a Attila",
 
     order_title: "Objednať prepravu",
     name: "Meno",
