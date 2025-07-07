@@ -102,7 +102,7 @@ main {
   }
 
   .logo {
-    margin-left: 0;
+    margin-left: 10;
     height: 60px;
   }
 }
