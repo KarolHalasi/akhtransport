@@ -8,6 +8,7 @@ document.getElementById("orderForm").addEventListener("submit", async (e) => {
   const data = {
     name: form.name.value,
     email: form.email.value,
+    phonenumber: form.phonenumber.value,
     pickupAddress: form.pickup.value,
     deliveryAddress: form.delivery.value,
     date: form.datetime.value,
