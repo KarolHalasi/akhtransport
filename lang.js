@@ -23,15 +23,15 @@ const translations = {
     password: "Heslo",
     login_button: "Prihlásiť sa",
     no_account: "Nemáte účet? Zaregistrujte sa.",
-
     register_title: "Registrácia",
     register_button: "Registrovať sa",
-    have_account: "Máte účet? Prihláste sa."
+    have_account: "Máte účet? Prihláste sa.",
 
     about: "O nás",
     services: "Služby",
-    contact: "Kontakt", 
+    contact: "Kontakt"
   },
+
   hu: {
     home: "Főoldal",
     order: "Rendelés",
@@ -56,15 +56,15 @@ const translations = {
     password: "Jelszó",
     login_button: "Bejelentkezés",
     no_account: "Nincs fiókja? Regisztráljon.",
-
     register_title: "Regisztráció",
     register_button: "Regisztráció",
-    have_account: "Már van fiókja? Jelentkezzen be."
+    have_account: "Már van fiókja? Jelentkezzen be.",
 
     about: "Rólunk",
     services: "Szolgáltatások",
-    contact: "Kapcsolat",
+    contact: "Kapcsolat"
   },
+
   en: {
     home: "Home",
     order: "Order",
@@ -89,18 +89,19 @@ const translations = {
     password: "Password",
     login_button: "Login",
     no_account: "Don't have an account? Register.",
-
     register_title: "Register",
     register_button: "Register",
-    have_account: "Already have an account? Login."
+    have_account: "Already have an account? Login.",
 
     about: "About",
     services: "Services",
-    contact: "Contact",
+    contact: "Contact"
   }
 };
 
 function setLanguage(lang) {
+  localStorage.setItem("lang", lang); // opcionális: megőrzi a választást újratöltés után
+
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
     if (translations[lang] && translations[lang][key]) {
@@ -108,5 +109,7 @@ function setLanguage(lang) {
     }
   });
 }
-setLanguage("sk"); // Default language
 
+// Ha van mentett nyelv, használjuk azt, különben alapértelmezésként "sk"
+const savedLang = localStorage.getItem("lang") || "sk";
+setLanguage(savedLang);
