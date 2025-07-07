@@ -1,60 +1,48 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f9f9f9;
-  color: #333;
-}
-
-header {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
 .header-container {
   display: flex;
-  align-items: center;
-  justify-content: center; /* középre rendezi a tartalmat vízszintesen */
-  flex-wrap: wrap;         /* törés engedélyezése ha nem fér el */
+  align-items: center;      /* függőlegesen középre */
+  justify-content: center;  /* vízszintesen középre */
+  flex-wrap: nowrap;        /* fejléc nem törik sorba, logó+nav egy sorban */
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  gap: 2rem;               /* nagyobb távolság az elemek között */
+  gap: 2rem;
 }
 
 .logo {
   height: 100px;
   object-fit: contain;
   flex-shrink: 0;
+  margin-left: 30px;        /* 30px jobbra tolás */
 }
 
 nav {
-  flex: 1 1 auto;          /* rugalmasan foglal helyet, de nem kevesebbet mint a tartalom */
+  flex: 1 1 auto;
   display: flex;
-  justify-content: center; /* a menüpontok középre rendezése */
+  justify-content: center;
+  align-items: center;      /* függőleges középre */
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  flex-wrap: wrap;         /* törés engedélyezése ha nem fér ki */
+  flex-wrap: nowrap;        /* alapból ne törjenek */
   gap: 1.5rem;
   padding: 0;
   margin: 0;
-  justify-content: center; /* több sor esetén is középre */
+  justify-content: center;
+  align-items: center;
 }
 
-nav a {
-  color: #003366;
-  text-decoration: none;
-  font-weight: bold;
-  white-space: nowrap;     /* ne törje meg a link szöveget */
+/* Mobilon engedjük a menüpontok törését */
+@media (max-width: 768px) {
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
-/* Fix nyelvválasztó */
 .lang-switcher {
   position: absolute;
   top: 1rem;
@@ -70,28 +58,4 @@ nav a {
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
-}
-
-/* Tartalom */
-main {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Mobilbarát */
-@media (max-width: 768px) {
-  .header-container {
-    gap: 1rem;
-  }
-
-  nav {
-    width: 100%;           /* menü teljes szélesség */
-    justify-content: center;
-  }
-
-  nav ul {
-    justify-content: center;
-    gap: 1rem;
-  }
 }
