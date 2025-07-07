@@ -11,27 +11,38 @@ header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  /* eltávolítjuk a fix magasságot, hogy ne csússzon ki semmi */
-  padding: 0.5rem 0;
+  padding: 1rem 0;
+  position: relative;
 }
 
+/* Logó külön rétegben */
+.logo-wrapper {
+  position: absolute;
+  top: 0.5rem;
+  left: 2rem;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.logo {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Menü konténer */
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  align-items: center;       /* függőleges középre igazítás */
-  justify-content: center;   /* vízszintes középre igazítás */
+  align-items: center;
+  justify-content: center;
   gap: 2rem;
   padding: 0 2rem;
+  flex-wrap: wrap;
   position: relative;
-  flex-wrap: wrap;           /* engedi a törést mobilon */
-}
-
-.logo {
-  height: 100px;
-  object-fit: contain;
-  flex-shrink: 0;
-  margin-left: 30px;
 }
 
 nav {
@@ -43,11 +54,11 @@ nav {
 nav ul {
   list-style: none;
   display: flex;
-  flex-wrap: wrap;           /* engedi a törést mobilon */
+  flex-wrap: wrap;
   gap: 1.5rem;
   padding: 0;
   margin: 0;
-  justify-content: center;   /* több sor esetén is középre */
+  justify-content: center;
   align-items: center;
 }
 
@@ -55,10 +66,10 @@ nav a {
   color: #003366;
   text-decoration: none;
   font-weight: bold;
-  white-space: nowrap;       /* ne törje meg a link szöveget */
+  white-space: nowrap;
 }
 
-/* Fix nyelvválasztó */
+/* Nyelvválasztó a jobb felső sarokban */
 .lang-switcher {
   position: absolute;
   top: 1rem;
@@ -85,10 +96,19 @@ main {
 
 /* Mobilbarát */
 @media (max-width: 768px) {
+  .logo-wrapper {
+    position: relative;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    height: 60px;
+    margin-bottom: 0.5rem;
+  }
+
   .header-container {
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem 1rem;
+    padding: 1rem;
   }
 
   nav {
@@ -101,8 +121,9 @@ main {
     gap: 1rem;
   }
 
-  .logo {
-    margin-left: 4px;
-    height: 60px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
 }
