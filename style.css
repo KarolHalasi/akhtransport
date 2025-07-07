@@ -11,13 +11,13 @@ header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: 100px; /* fix magasság a középre igazításhoz */
+  /* eltávolítjuk a fix magasságot, hogy ne csússzon ki semmi */
+  padding: 0.5rem 0;
 }
 
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
-  height: 100%;
   display: flex;
   align-items: center;       /* függőleges középre igazítás */
   justify-content: center;   /* vízszintes középre igazítás */
@@ -28,10 +28,10 @@ header {
 }
 
 .logo {
-  height: 100px;              /* kisebb méret, hogy szépen elférjen */
+  height: 60px;
   object-fit: contain;
   flex-shrink: 0;
-  margin-left: 30px;         /* 30px-el jobbra tolás */
+  margin-left: 30px;
 }
 
 nav {
@@ -85,10 +85,6 @@ main {
 
 /* Mobilbarát */
 @media (max-width: 768px) {
-  header {
-    height: auto;           /* automatikus magasság mobilon */
-  }
-
   .header-container {
     flex-direction: column;
     gap: 1rem;
@@ -106,7 +102,7 @@ main {
   }
 
   .logo {
-    margin-left: 0;         /* mobilon nincs jobbra tolás */
-    height: 50px;           /* kisebb logo méret mobilon */
+    margin-left: 0;
+    height: 50px;
   }
 }
