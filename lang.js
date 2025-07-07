@@ -106,12 +106,17 @@ function setLanguage(lang) {
   localStorage.setItem("lang", lang); // opcionális: megőrzi a választást újratöltés után
 
   document.querySelectorAll("[data-i18n]").forEach(el => {
-    const key = el.getAttribute("data-i18n");
-    if (translations[lang] && translations[lang][key]) {
-      el.textContent = translations[lang][key];
+  const key = el.getAttribute("data-i18n");
+  const translation = translations[lang] && translations[lang][key];
+  if (translation) {
+    if (el.tagName.toLowerCase() === "title") {
+      document.title = translation;
+    } else {
+      el.textContent = translation;
     }
-  });
-}
+  }
+});
+
 
 // Ha van mentett nyelv, használjuk azt, különben alapértelmezésként "sk"
 const savedLang = localStorage.getItem("lang") || "sk";
