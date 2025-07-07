@@ -16,12 +16,13 @@ header {
 .header-container {
   display: flex;
   align-items: center;
-  justify-content: center; /* csak középen legyenek a logo + nav */
-  flex-wrap: wrap;
+  justify-content: center; /* középre rendezi a tartalmat vízszintesen */
+  flex-wrap: wrap;         /* törés engedélyezése ha nem fér el */
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+  gap: 2rem;               /* nagyobb távolság az elemek között */
 }
 
 .logo {
@@ -31,28 +32,29 @@ header {
 }
 
 nav {
-  flex: 1;
+  flex: 1 1 auto;          /* rugalmasan foglal helyet, de nem kevesebbet mint a tartalom */
   display: flex;
-  justify-content: center;
+  justify-content: center; /* a menüpontok középre rendezése */
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap;         /* törés engedélyezése ha nem fér ki */
   gap: 1.5rem;
   padding: 0;
   margin: 0;
+  justify-content: center; /* több sor esetén is középre */
 }
 
 nav a {
   color: #003366;
   text-decoration: none;
   font-weight: bold;
-  white-space: nowrap;
+  white-space: nowrap;     /* ne törje meg a link szöveget */
 }
 
-/* Fix nyelvvalaszto */
+/* Fix nyelvválasztó */
 .lang-switcher {
   position: absolute;
   top: 1rem;
@@ -77,20 +79,19 @@ main {
   margin: 0 auto;
 }
 
-/* Mobilbarat */
+/* Mobilbarát */
 @media (max-width: 768px) {
   .header-container {
-    flex-direction: column;
-    align-items: center;
     gap: 1rem;
   }
 
   nav {
+    width: 100%;           /* menü teljes szélesség */
     justify-content: center;
-    width: 100%;
   }
 
   nav ul {
     justify-content: center;
+    gap: 1rem;
   }
 }
