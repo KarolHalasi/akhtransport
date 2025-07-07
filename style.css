@@ -10,34 +10,51 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.85); /* világos áttetsző háttér */
+  background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  flex-wrap: wrap; /* fontos, hogy a header is tudjon több sort */
 }
 
 .logo {
   height: 80px;
   object-fit: contain;
+  flex-shrink: 0; /* ne csökkenjen túl kicsire */
+  margin-right: 1rem;
+}
+
+nav {
+  flex: 1 1 auto; /* hogy kitöltse a helyet és törjön, ha kell */
 }
 
 nav ul {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 0;
   margin: 0;
+  flex-wrap: wrap; /* több sorba törés */
+  justify-content: flex-start; /* balra rendezés */
 }
 
 nav a {
   color: #003366;
   text-decoration: none;
   font-weight: bold;
+  white-space: nowrap; /* linkek ne törjenek */
+}
+
+.lang-switcher {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0; /* ne csökkenjen össze */
+  margin-left: 1rem;
+  margin-top: 0.5rem; /* legyen kis távolság ha több sor lesz */
 }
 
 .lang-switcher button {
-  margin-left: 0.5rem;
   background: #003366;
   color: white;
   border: none;
@@ -50,11 +67,9 @@ main {
   padding: 2rem;
 }
 
-/* Reszponzív beállítások mobilra */
+/* Mobilon kisebb logo, header padding */
 @media (max-width: 768px) {
   header {
-    flex-direction: column;
-    align-items: flex-start;
     padding: 1rem;
   }
 
@@ -63,28 +78,14 @@ main {
     margin-bottom: 0.5rem;
   }
 
-  nav ul {
-    flex-direction: column;
-    width: 100%;
-    gap: 0.8rem;
-  }
-
-  nav a {
-    font-size: 1.1rem;
-  }
-
   .lang-switcher {
-    margin-top: 1rem;
-    align-self: flex-start;
-  }
-
-  .lang-switcher button {
     margin-left: 0;
-    margin-right: 0.5rem;
+    width: 100%;
+    justify-content: flex-start;
   }
 }
 
-/* Nagyobb kijelzőkön max szélesség, középre igazítás */
+/* Nagyobb kijelzők max szélesség és középre igazítás */
 @media (min-width: 1200px) {
   header {
     max-width: 1200px;
