@@ -111,7 +111,7 @@ main {
 @media (max-width: 768px) {
   .logo-wrapper {
     position: absolute;
-    top: -0,4rem;
+    top: 0 !important;
     left: 2rem;
     height: 60px;
     max-width: 60px;
