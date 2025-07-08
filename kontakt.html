@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="contact_title">Kontakt</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .contact-container {
+      max-width: 600px;
+      margin: 4em auto;
+      background: #ffffffcc;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-container h2 {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.8em;
+      margin-bottom: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .contact-form button {
+      width: 100%;
+      padding: 0.8em;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .contact-form button:hover {
+      background-color: #005fa3;
+    }
+
+    .success-message {
+      color: green;
+      text-align: center;
+      margin-top: 1em;
+    }
+
+    .contact-info {
+      margin-top: 2em;
+      text-align: center;
+      font-size: 0.95em;
+      color: #333;
+    }
+
+    .lang-switcher {
+      text-align: center;
+      margin-top: 2em;
+    }
+
+    .lang-switcher button {
+      margin: 0 0.3em;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-init.js"></script>
+</head>
+<body>
+  <div class="contact-container">
+    <h2 data-i18n="contact_title">Kontaktujte nás</h2>
+    <form id="contactForm" class="contact-form">
+      <input type="text" id="name" placeholder="Meno" required data-i18n-placeholder="placeholder_name" />
+      <input type="email" id="email" placeholder="Email" required data-i18n-placeholder="placeholder_email" />
+      <textarea id="message" placeholder="Vaša správa" rows="5" required data-i18n-placeholder="placeholder_message"></textarea>
+      <button type="submit" data-i18n="send_button">Odoslať správu</button>
+      <div class="success-message" id="successMessage" style="display: none;" data-i18n="message_sent">
+        Správa bola úspešne odoslaná.
+      </div>
+    </form>
+
+    <div class="contact-info">
+      <p><strong>AKH Transport s.r.o.</strong></p>
+      <p>Email: info@akhtransport.sk</p>
+      <p>Tel: +421 900 000 000</p>
+      <p>IČO: 12345678</p>
+    </div>
+
+    <div class="lang-switcher">
+      <button onclick="setLanguage('sk')">SK</button>
+      <button onclick="setLanguage('hu')">HU</button>
+      <button onclick="setLanguage('en')">EN</button>
+    </div>
+  </div>
+
+  <script>
+    const db = firebase.firestore();
+
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (!name || !email || !message) {
+        alert("Vyplňte prosím všetky polia.");
+        return;
+      }
+
+      try {
+        await db.collection("messages").add({
+          name,
+          email,
+          message,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        document.getElementById("contactForm").reset();
+        document.getElementById("successMessage").style.display = "block";
+      } catch (error) {
+        alert("Chyba pri odosielaní: " + error.message);
+      }
+    });
+  </script>
+
+  <script src="lang.js"></script>
+</body>
+</html>
