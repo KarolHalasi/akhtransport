@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyBxD-bUWAFmlAxzrgvdl5meMc9GjIDz0XA",
+  apiKey: "AIzaSyBFvKq4Bx4b33ZZTBjTEfB1x6z10d-pd2A",
   authDomain: "akhtransapp.firebaseapp.com",
   projectId: "akhtransapp",
   storageBucket: "akhtransapp.appspot.com",
@@ -7,7 +7,6 @@ const firebaseConfig = {
   appId: "1:960895665450:web:52d8efb64b76c2392602f5"
 };
 
-// Inicializuj Firebase len ak ešte nebol inicializovaný
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
