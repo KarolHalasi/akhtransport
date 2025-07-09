@@ -136,9 +136,14 @@
   const email = loginForm.email.value;
   const password = loginForm.password.value;
   try {
-    const userCredential = await auth.signInWithEmailAndPassword(email, password);
-    console.log("✅ Prihlásený:", userCredential.user.email);
-    window.location.href = "dashboard.html";
+   const userCredential = await auth.signInWithEmailAndPassword(email, password);
+console.log("✅ Prihlásený:", userCredential.user.email);
+
+// Odlož presmerovanie o 500ms, aby sa Firebase stihol stabilizovať
+setTimeout(() => {
+  window.location.href = "dashboard.html";
+}, 500);
+    
   } catch (error) {
     console.error("❌ Prihlásenie zlyhalo:", error.message);
     alert("Chyba pri prihlasovaní: " + error.message);
