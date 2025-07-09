@@ -40,18 +40,26 @@
       margin: 0.3em 0;
     }
 
-    .delete-btn {
-      background-color: #cc0000;
-      color: #fff;
+    .delete-btn, .edit-btn, .new-order-btn {
+      background-color: #0077cc;
+      color: white;
       border: none;
-      padding: 0.4em 0.8em;
+      padding: 0.5em 1em;
       border-radius: 6px;
       cursor: pointer;
       margin-top: 0.5em;
     }
 
+    .delete-btn {
+      background-color: #cc0000;
+    }
+
     .delete-btn:hover {
       background-color: #a80000;
+    }
+
+    .edit-btn:hover, .new-order-btn:hover {
+      background-color: #005fa3;
     }
 
     .logout-btn {
@@ -87,8 +95,12 @@
     <div class="user-info">
       <h2 id="userName">Načítavam meno...</h2>
       <p id="userEmail">email@example.com</p>
+      <p id="userPhone">Telefónne číslo: —</p>
+      <button class="edit-btn" onclick="editProfile()">Upraviť profil</button>
       <button class="logout-btn" onclick="logout()">Odhlásiť sa</button>
     </div>
+
+    <button class="new-order-btn" onclick="window.location.href='order.html'">Vytvoriť novú objednávku</button>
 
     <h3>Moje objednávky</h3>
     <div id="ordersList" class="orders">
@@ -116,22 +128,29 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async user => {
       if (!user) {
-        window.location.href = "auth.html";
-      } else {
-        console.log("Prihlásený ako:", user.email);
-        if (user.email.toLowerCase().trim() === "info@akhtransport.sk") {
-          console.log("Presmerovanie na admin rozhranie...");
-          setTimeout(() => {
-            window.location.href = "admin.html";
-          }, 300);
-        } else {
-          document.getElementById("userName").textContent = user.displayName || "Používateľ";
-          document.getElementById("userEmail").textContent = user.email;
-          loadOrders(user.email);
-        }
+        return window.location.href = "auth.html";
       }
+
+      if (user.email.toLowerCase().trim() === "info@akhtransport.sk") {
+        return window.location.href = "admin.html";
+      }
+
+      document.getElementById("userName").textContent = user.displayName || "Používateľ";
+      document.getElementById("userEmail").textContent = user.email;
+
+      try {
+        const doc = await db.collection("users").doc(user.uid).get();
+        const userData = doc.data();
+        if (userData?.phone) {
+          document.getElementById("userPhone").textContent = "Telefónne číslo: " + userData.phone;
+        }
+      } catch (e) {
+        console.warn("Nepodarilo sa načítať telefónne číslo.");
+      }
+
+      loadOrders(user.email);
     });
 
     function logout() {
@@ -145,7 +164,7 @@
       list.innerHTML = "";
 
       try {
-        const snapshot = await db.collection("orders").where("email", "==", email).get();
+        const snapshot = await db.collection("orders").where("userEmail", "==", email).get();
 
         if (snapshot.empty) {
           list.innerHTML = "<p>Nemáte žiadne objednávky.</p>";
@@ -157,8 +176,8 @@
           const card = document.createElement("div");
           card.className = "order-card";
           card.innerHTML = `
-            <p><strong>Vyzdvihnutie:</strong> ${data.pickup || "-"}</p>
-            <p><strong>Doručenie:</strong> ${data.delivery || "-"}</p>
+            <p><strong>Vyzdvihnutie:</strong> ${data.pickupAddress || "-"}</p>
+            <p><strong>Doručenie:</strong> ${data.deliveryAddress || "-"}</p>
             <p><strong>Dátum:</strong> ${data.date || "-"}</p>
             <p><strong>Poznámka:</strong> ${data.note || "-"}</p>
             <p><strong>Stav:</strong> ${data.status || "Čaká"}</p>
@@ -167,8 +186,8 @@
           `;
           list.appendChild(card);
         });
-      } catch (error) {
-        console.error("Chyba pri načítaní:", error);
+      } catch (err) {
+        console.error("Chyba pri načítaní objednávok:", err);
         list.innerHTML = "<p>Chyba pri načítaní objednávok.</p>";
       }
     }
@@ -177,10 +196,25 @@
       if (confirm("Naozaj chcete zmazať túto objednávku?")) {
         try {
           await db.collection("orders").doc(id).delete();
-          loadOrders(auth.currentUser.email); // reload
+          loadOrders(auth.currentUser.email);
         } catch (err) {
           alert("Chyba pri mazaní: " + err.message);
         }
+      }
+    }
+
+    async function editProfile() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const newName = prompt("Zadajte nové meno:", user.displayName || "");
+      const newPhone = prompt("Zadajte nové telefónne číslo:");
+
+      if (newName) {
+        await user.updateProfile({ displayName: newName });
+        await db.collection("users").doc(user.uid).set({ phone: newPhone }, { merge: true });
+        alert("Profil bol aktualizovaný.");
+        location.reload();
       }
     }
   </script>
