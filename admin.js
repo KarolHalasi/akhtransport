@@ -1,4 +1,4 @@
-// admin.js
+&// admin.js
 
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -98,4 +98,98 @@ async function deleteOrder(id) {
   }
 }
 
-// Tu môžeme doplniť aj loadMessages(), exporty atď neskôr.
+async function loadMessages() {
+  const list = document.getElementById("messagesList");
+  list.innerHTML = "";
+  try {
+    const snapshot = await db.collection("messages").orderBy("timestamp", "desc").get();
+    if (snapshot.empty) {
+      list.innerHTML = "<p>Žiadne správy zatiaľ neboli prijaté.</p>";
+      return;
+    }
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const card = document.createElement("div");
+      card.className = "message-card";
+      const date = data.timestamp?.toDate().toLocaleString() || "-";
+      card.innerHTML = `
+        <p><strong>Meno:</strong> ${data.name || "-"}</p>
+        <p><strong>Email:</strong> ${data.email || "-"}</p>
+        <p><strong>Správa:</strong><br/> ${data.message || "-"}</p>
+        <p><strong>Dátum:</strong> ${date}</p>
+        <button class="delete-btn" onclick="deleteMessage('${doc.id}')">Vymazať</button>
+      `;
+      list.appendChild(card);
+    });
+  } catch (err) {
+    list.innerHTML = "<p>Chyba pri načítaní správ.</p>";
+  }
+}
+
+async function deleteMessage(id) {
+  if (confirm("Naozaj chcete vymazať túto správu?")) {
+    try {
+      await db.collection("messages").doc(id).delete();
+      loadMessages();
+    } catch (err) {
+      alert("Chyba pri mazaní: " + err.message);
+    }
+  }
+}
+
+function downloadCSV(filename, rows) {
+  if (!Array.isArray(rows) || !rows.length) return;
+  const headers = Object.keys(rows[0]);
+  const csv = [
+    headers.join(","),
+    ...rows.map(row => headers.map(field => `"${(row[field] ?? "").toString().replace(/"/g, '""')}"`).join(","))
+  ].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+async function exportOrdersCSV() {
+  try {
+    const snapshot = await db.collection("orders").get();
+    const data = [];
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      data.push({
+        Vyzdvihnutie: d.pickup || d.pickupAddress || "",
+        Doručenie: d.delivery || d.deliveryAddress || "",
+        Dátum: d.date || "",
+        Email: d.userEmail || d.email || "",
+        Poznámka: d.note || "",
+        Stav: d.status || "",
+        Cena: d.price || ""
+      });
+    });
+    if (data.length) downloadCSV("objednavky.csv", data);
+    else alert("Žiadne objednávky na export.");
+  } catch (err) {
+    alert("Chyba pri exporte objednávok: " + err.message);
+  }
+}
+
+async function exportMessagesCSV() {
+  try {
+    const snapshot = await db.collection("messages").get();
+    const data = [];
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      data.push({
+        Meno: d.name || "",
+        Email: d.email || "",
+        Správa: d.message || "",
+        Dátum: d.timestamp?.toDate().toLocaleString() || ""
+      });
+    });
+    if (data.length) downloadCSV("spravy.csv", data);
+    else alert("Žiadne správy na export.");
+  } catch (err) {
+    alert("Chyba pri exporte správ: " + err.message);
+  }
+}
