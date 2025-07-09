@@ -154,11 +154,11 @@
           const userCredential = await auth.signInWithEmailAndPassword(email, password);
           const user = userCredential.user;
 
-          if (!user.emailVerified) {
-            alert("E‑mailová adresa ešte nebola overená. Skontrolujte svoju schránku.");
-            await auth.signOut();
-            return;
-          }
+       // if (!user.emailVerified) {
+//   alert("E‑mailová adresa ešte nebola overená. Skontrolujte svoju schránku.");
+//   await auth.signOut();
+//   return;
+// }
 
           console.log("✅ Prihlásený:", user.email);
           setTimeout(() => {
