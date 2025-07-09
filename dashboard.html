@@ -120,9 +120,17 @@
       if (!user) {
         window.location.href = "auth.html";
       } else {
-        document.getElementById("userName").textContent = user.displayName || "Používateľ";
-        document.getElementById("userEmail").textContent = user.email;
-        loadOrders(user.email);
+        console.log("Prihlásený ako:", user.email);
+        if (user.email.toLowerCase().trim() === "info@akhtransport.sk") {
+          console.log("Presmerovanie na admin rozhranie...");
+          setTimeout(() => {
+            window.location.href = "admin.html";
+          }, 300);
+        } else {
+          document.getElementById("userName").textContent = user.displayName || "Používateľ";
+          document.getElementById("userEmail").textContent = user.email;
+          loadOrders(user.email);
+        }
       }
     });
 
