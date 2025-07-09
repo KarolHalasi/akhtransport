@@ -72,6 +72,16 @@
     .lang-switcher button {
       margin: 0 0.3em;
     }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: -0.5em;
+    }
+
+    .forgot-password a {
+      color: #0077cc;
+      text-decoration: none;
+    }
   </style>
 
   <!-- Firebase SDK -->
@@ -87,12 +97,17 @@
       <button id="registerTab" data-i18n="register_title">Registrácia</button>
     </div>
 
+    <!-- Prihlásenie -->
     <form id="loginForm" class="active">
       <input type="email" name="email" placeholder="Email" required />
       <input type="password" name="password" placeholder="Heslo" required />
       <button type="submit" data-i18n="login_button">Prihlásiť sa</button>
+      <div class="forgot-password">
+        <a href="#" onclick="resetPassword()">Zabudnuté heslo?</a>
+      </div>
     </form>
 
+    <!-- Registrácia -->
     <form id="registerForm">
       <input type="email" name="email" placeholder="Email" required />
       <input type="password" name="password" placeholder="Heslo" required />
@@ -107,7 +122,7 @@
     </div>
   </div>
 
-  <!-- JavaScript vždy na konci -->
+  <!-- JavaScript -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const auth = firebase.auth();
@@ -131,24 +146,29 @@
         loginForm.classList.remove("active");
       });
 
-     loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = loginForm.email.value;
-  const password = loginForm.password.value;
-  try {
-   const userCredential = await auth.signInWithEmailAndPassword(email, password);
-console.log("✅ Prihlásený:", userCredential.user.email);
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = loginForm.email.value;
+        const password = loginForm.password.value;
+        try {
+          const userCredential = await auth.signInWithEmailAndPassword(email, password);
+          const user = userCredential.user;
 
-// Odlož presmerovanie o 500ms, aby sa Firebase stihol stabilizovať
-setTimeout(() => {
-  window.location.href = "dashboard.html";
-}, 500);
-    
-  } catch (error) {
-    console.error("❌ Prihlásenie zlyhalo:", error.message);
-    alert("Chyba pri prihlasovaní: " + error.message);
-  }
-});
+          if (!user.emailVerified) {
+            alert("E‑mailová adresa ešte nebola overená. Skontrolujte svoju schránku.");
+            await auth.signOut();
+            return;
+          }
+
+          console.log("✅ Prihlásený:", user.email);
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 500);
+        } catch (error) {
+          console.error("❌ Prihlásenie zlyhalo:", error.message);
+          alert("Chyba pri prihlasovaní: " + error.message);
+        }
+      });
 
       registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -158,15 +178,33 @@ setTimeout(() => {
         try {
           const cred = await auth.createUserWithEmailAndPassword(email, password);
           await cred.user.updateProfile({ displayName: name });
-          window.location.href = "dashboard.html";
+
+          // Odoslať verifikačný e‑mail
+          await cred.user.sendEmailVerification();
+          alert("Registrácia úspešná. Overovací e‑mail bol odoslaný.");
+
+          // Odhlásiť používateľa, kým nepotvrdí email
+          await auth.signOut();
         } catch (error) {
           alert("Chyba pri registrácii: " + error.message);
         }
       });
     });
+
+    function resetPassword() {
+      const email = prompt("Zadajte svoj e‑mail pre obnovenie hesla:");
+      if (!email) return;
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+          alert("Odkaz na obnovenie hesla bol odoslaný na e‑mail.");
+        })
+        .catch(error => {
+          console.error("Chyba pri odoslaní odkazu:", error.message);
+          alert("Chyba: " + error.message);
+        });
+    }
   </script>
 
   <script src="lang.js"></script>
 </body>
 </html>
-
