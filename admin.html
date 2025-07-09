@@ -1,188 +1,130 @@
-<!-- … zachovaný <head> a štýly ostávajú rovnaké … -->
-
-<script>
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  const ADMIN_EMAIL = "info@akhtransport.sk";
-
-  auth.onAuthStateChanged(user => {
-    if (!user || user.email !== ADMIN_EMAIL) {
-      window.location.href = "index.html";
-    } else {
-      loadOrders();
-      loadMessages();
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin panel</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .admin-panel {
+      max-width: 1000px;
+      margin: 2em auto;
+      padding: 1.5em;
+      background: #ffffffcc;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
-  });
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1em;
+    }
+    .toggle-buttons {
+      display: flex;
+      gap: 1em;
+      margin-bottom: 1.5em;
+      justify-content: center;
+    }
+    .filters {
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+      margin-bottom: 1em;
+    }
+    .filters input,
+    .filters select {
+      padding: 0.4em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .order-card, .message-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1em;
+      margin-bottom: 1em;
+      background: #f9f9f9;
+    }
+    .order-card input,
+    .order-card select {
+      padding: 0.4em;
+      width: 100%;
+      margin-top: 0.3em;
+      margin-bottom: 0.8em;
+    }
+    .save-btn, .delete-btn {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .save-btn:hover { background-color: #005fa3; }
+    .delete-btn { background-color: #cc0000; margin-top: 0.5em; }
+    .delete-btn:hover { background-color: #a80000; }
+    .logout-btn {
+      background-color: #555;
+      color: white;
+      padding: 0.5em 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .logout-btn:hover { background-color: #333; }
+    .lang-switcher { text-align: center; margin-top: 2em; }
+    .hidden { display: none; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-init.js"></script>
+</head>
+<body>
+  <div class="admin-panel">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <button class="logout-btn" onclick="logout()">Odhlásiť sa</button>
+    </div>
 
-  function logout() {
-    auth.signOut().then(() => window.location.href = "index.html");
-  }
+    <div class="toggle-buttons">
+      <button onclick="showSection('orders')">Objednávky</button>
+      <button onclick="showSection('messages')">Správy</button>
+    </div>
 
-  function showSection(section) {
-    document.getElementById("ordersSection").classList.toggle("hidden", section !== "orders");
-    document.getElementById("messagesSection").classList.toggle("hidden", section !== "messages");
-  }
-
-  async function loadOrders() {
-    const list = document.getElementById("ordersList");
-    list.innerHTML = "";
-    try {
-      const snapshot = await db.collection("orders").orderBy("date", "desc").get();
-      if (snapshot.empty) {
-        list.innerHTML = "<p>Žiadne objednávky zatiaľ neexistujú.</p>";
-        return;
-      }
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const card = document.createElement("div");
-        card.className = "order-card";
-        card.innerHTML = `
-          <p><strong>Vyzdvihnutie:</strong> ${data.pickupAddress || "-"}</p>
-          <p><strong>Doručenie:</strong> ${data.deliveryAddress || "-"}</p>
-          <p><strong>Dátum:</strong> ${data.date || "-"}</p>
-          <p><strong>Poznámka:</strong> ${data.note || "-"}</p>
-          <p><strong>Email zákazníka:</strong> ${data.userEmail || data.email || "-"}</p>
-          <label>Stav:</label>
-          <select id="status-${doc.id}">
-            <option value="Čaká" ${data.status === "Čaká" ? "selected" : ""}>Čaká</option>
-            <option value="Vybavuje sa" ${data.status === "Vybavuje sa" ? "selected" : ""}>Vybavuje sa</option>
-            <option value="Doručené" ${data.status === "Doručené" ? "selected" : ""}>Doručené</option>
+    <div id="ordersSection">
+      <h3>Objednávky</h3>
+      <div class="filters">
+        <label>Dátum od: <input type="date" id="filterDateFrom"></label>
+        <label>Dátum do: <input type="date" id="filterDateTo"></label>
+        <label>Stav:
+          <select id="filterStatus">
+            <option value="">Všetky</option>
+            <option value="Čaká">Čaká</option>
+            <option value="Vybavuje sa">Vybavuje sa</option>
+            <option value="Doručené">Doručené</option>
           </select>
-          <label>Cena (€):</label>
-          <input type="number" id="price-${doc.id}" value="${data.price || ""}" />
-          <button class="save-btn" onclick="saveOrder('${doc.id}')">Uložiť zmeny</button>
-          <button class="delete-btn" onclick="deleteOrder('${doc.id}')">Vymazať objednávku</button>
-        `;
-        list.appendChild(card);
-      });
-    } catch (err) {
-      console.error("Chyba pri načítaní objednávok:", err);
-      list.innerHTML = "<p>Chyba pri načítaní objednávok.</p>";
-    }
-  }
+        </label>
+        <button onclick="loadOrders()">Filtrovať</button>
+      </div>
+      <button onclick="exportOrdersCSV()">Export objednávok do CSV</button>
+      <div id="ordersList">Načítavam objednávky...</div>
+    </div>
 
-  async function saveOrder(id) {
-    const status = document.getElementById("status-" + id).value;
-    const price = document.getElementById("price-" + id).value;
-    try {
-      await db.collection("orders").doc(id).update({
-        status,
-        price: price !== "" ? parseFloat(price) : null
-      });
-      alert("Objednávka bola aktualizovaná.");
-    } catch (err) {
-      alert("Chyba pri ukladaní: " + err.message);
-    }
-  }
+    <div id="messagesSection" class="hidden">
+      <h3>Správy z kontaktu</h3>
+      <button onclick="exportMessagesCSV()">Export správ do CSV</button>
+      <div id="messagesList">Načítavam správy...</div>
+    </div>
 
-  async function deleteOrder(id) {
-    if (confirm("Naozaj chcete zmazať túto objednávku?")) {
-      try {
-        await db.collection("orders").doc(id).delete();
-        loadOrders(); // Reload
-      } catch (err) {
-        alert("Chyba pri mazaní: " + err.message);
-      }
-    }
-  }
+    <div class="lang-switcher">
+      <button onclick="setLanguage('sk')">SK</button>
+      <button onclick="setLanguage('hu')">HU</button>
+      <button onclick="setLanguage('en')">EN</button>
+    </div>
+  </div>
 
-  async function loadMessages() {
-    const list = document.getElementById("messagesList");
-    list.innerHTML = "";
-    try {
-      const snapshot = await db.collection("messages").orderBy("timestamp", "desc").get();
-      if (snapshot.empty) {
-        list.innerHTML = "<p>Žiadne správy zatiaľ neboli prijaté.</p>";
-        return;
-      }
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const card = document.createElement("div");
-        card.className = "message-card";
-        const date = data.timestamp?.toDate().toLocaleString() || "-";
-        card.innerHTML = `
-          <p><strong>Meno:</strong> ${data.name || "-"}</p>
-          <p><strong>Email:</strong> ${data.email || "-"}</p>
-          <p><strong>Správa:</strong><br/> ${data.message || "-"}</p>
-          <p><strong>Dátum:</strong> ${date}</p>
-          <button class="delete-btn" onclick="deleteMessage('${doc.id}')">Vymazať</button>
-        `;
-        list.appendChild(card);
-      });
-    } catch (err) {
-      list.innerHTML = "<p>Chyba pri načítaní správ.</p>";
-    }
-  }
-
-  async function deleteMessage(id) {
-    if (confirm("Naozaj chcete vymazať túto správu?")) {
-      try {
-        await db.collection("messages").doc(id).delete();
-        loadMessages();
-      } catch (err) {
-        alert("Chyba pri mazaní: " + err.message);
-      }
-    }
-  }
-
-  function downloadCSV(filename, rows) {
-    if (!Array.isArray(rows) || !rows.length) return;
-
-    const headers = Object.keys(rows[0]);
-    const csv = [
-      headers.join(","),
-      ...rows.map(row => headers.map(field => `"${(row[field] ?? "").toString().replace(/"/g, '""')}"`).join(","))
-    ].join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-  }
-
-  async function exportOrdersCSV() {
-    try {
-      const snapshot = await db.collection("orders").get();
-      const data = [];
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        data.push({
-          Vyzdvihnutie: d.pickupAddress || d.pickup || "",
-          Doručenie: d.deliveryAddress || d.delivery || "",
-          Dátum: d.date || "",
-          Email: d.userEmail || d.email || "",
-          Poznámka: d.note || "",
-          Stav: d.status || "",
-          Cena: d.price || ""
-        });
-      });
-      if (data.length) downloadCSV("objednavky.csv", data);
-      else alert("Žiadne objednávky na export.");
-    } catch (err) {
-      alert("Chyba pri exporte objednávok: " + err.message);
-    }
-  }
-
-  async function exportMessagesCSV() {
-    try {
-      const snapshot = await db.collection("messages").get();
-      const data = [];
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        data.push({
-          Meno: d.name || "",
-          Email: d.email || "",
-          Správa: d.message || "",
-          Dátum: d.timestamp?.toDate().toLocaleString() || ""
-        });
-      });
-      if (data.length) downloadCSV("spravy.csv", data);
-      else alert("Žiadne správy na export.");
-    } catch (err) {
-      alert("Chyba pri exporte správ: " + err.message);
-    }
-  }
-</script>
-
-<script src="lang.js"></script>
+  <script src="admin.js"></script>
+  <script src="lang.js"></script>
+</body>
+</html>
