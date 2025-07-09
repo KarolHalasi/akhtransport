@@ -31,39 +31,41 @@ async function loadOrders() {
   const status = document.getElementById("filterStatus").value;
 
   try {
-    let ref = db.collection("orders");
-    if (fromDate) ref = ref.where("date", ">=", fromDate);
-    if (toDate) ref = ref.where("date", "<=", toDate + "\uFFFF");
-    if (status) ref = ref.where("status", "==", status);
+    const snapshot = await db.collection("orders").orderBy("date", "desc").get();
 
-    const snapshot = await ref.orderBy("date", "desc").get();
+    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    if (snapshot.empty) {
+    const filtered = orders.filter(order => {
+      const date = order.date || "";
+      if (fromDate && date < fromDate) return false;
+      if (toDate && date > toDate) return false;
+      if (status && order.status !== status) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) {
       list.innerHTML = "<p>Žiadne objednávky nevyhovujú filtrom.</p>";
       return;
     }
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
+    filtered.forEach(order => {
       const card = document.createElement("div");
       card.className = "order-card";
       card.innerHTML = `
-        <p><strong>Vyzdvihnutie:</strong> ${data.pickupAddress || data.pickup || "-"}</p>
-        <p><strong>Doručenie:</strong> ${data.deliveryAddress || data.delivery || "-"}</p>
-        <p><strong>Dátum:</strong> ${data.date || "-"}</p>
-        <p><strong>Poznámka:</strong> ${data.note || "-"}</p>
-        <p><strong>Email zákazníka:</strong> ${data.email || data.userEmail || "-"}</p>
-        <label>Stav:
-          <select id="status-${doc.id}">
-            <option value="Čaká" ${data.status === "Čaká" ? "selected" : ""}>Čaká</option>
-            <option value="Vybavuje sa" ${data.status === "Vybavuje sa" ? "selected" : ""}>Vybavuje sa</option>
-            <option value="Doručené" ${data.status === "Doručené" ? "selected" : ""}>Doručené</option>
-          </select>
-        </label>
+        <p><strong>Vyzdvihnutie:</strong> ${order.pickup || "-"}</p>
+        <p><strong>Doručenie:</strong> ${order.delivery || "-"}</p>
+        <p><strong>Dátum:</strong> ${order.date || "-"}</p>
+        <p><strong>Email zákazníka:</strong> ${order.email || "-"}</p>
+        <label>Stav:</label>
+        <select id="status-${order.id}">
+          <option value="Čaká" ${order.status === "Čaká" ? "selected" : ""}>Čaká</option>
+          <option value="Vybavuje sa" ${order.status === "Vybavuje sa" ? "selected" : ""}>Vybavuje sa</option>
+          <option value="Doručené" ${order.status === "Doručené" ? "selected" : ""}>Doručené</option>
+        </select>
         <label>Cena (€):</label>
-        <input type="number" id="price-${doc.id}" value="${data.price || ""}" />
-        <button class="save-btn" onclick="saveOrder('${doc.id}')">Uložiť zmeny</button>
-        <button class="delete-btn" onclick="deleteOrder('${doc.id}')">Zmazať</button>
+        <input type="number" id="price-${order.id}" value="${order.price || ""}" />
+        <button class="save-btn" onclick="saveOrder('${order.id}')">Uložiť zmeny</button>
+        <button class="delete-btn" onclick="deleteOrder('${order.id}')">Zmazať</button>
       `;
       list.appendChild(card);
     });
