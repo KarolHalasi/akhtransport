@@ -131,17 +131,19 @@
         loginForm.classList.remove("active");
       });
 
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = loginForm.email.value;
-        const password = loginForm.password.value;
-        try {
-          await auth.signInWithEmailAndPassword(email, password);
-          window.location.href = "dashboard.html";
-        } catch (error) {
-          alert("Chyba pri prihlasovaní: " + error.message);
-        }
-      });
+     loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = loginForm.email.value;
+  const password = loginForm.password.value;
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    console.log("✅ Prihlásený:", userCredential.user.email);
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("❌ Prihlásenie zlyhalo:", error.message);
+    alert("Chyba pri prihlasovaní: " + error.message);
+  }
+});
 
       registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
