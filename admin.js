@@ -30,6 +30,7 @@ async function loadOrders() {
   const toDate = document.getElementById("filterDateTo")?.value;
   const status = document.getElementById("filterStatus")?.value;
   const accepted = document.getElementById("filterAccepted")?.value;
+  const withoutPrice = document.getElementById("filterWithoutPrice")?.checked;
 
   try {
     const snapshot = await db.collection("orders").orderBy("date", "desc").get();
@@ -45,8 +46,9 @@ async function loadOrders() {
       const matchAccepted =
         accepted === "true" ? data.acceptedByUser === true :
         accepted === "false" ? data.acceptedByUser !== true : true;
+      const matchPrice = withoutPrice ? !data.price : true;
 
-      return matchFrom && matchTo && matchStatus && matchAccepted;
+      return matchFrom && matchTo && matchStatus && matchAccepted && matchPrice;
     });
 
     if (filteredDocs.length === 0) {
