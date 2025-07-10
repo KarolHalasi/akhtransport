@@ -6,22 +6,19 @@
   <title data-i18n="order_title">Objednať prepravu</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <style>
-    /* Form mezők rendezése */
     #orderForm label {
       display: block;
       margin-bottom: 1rem;
     }
-
     #orderForm label span {
       display: block;
       margin-bottom: 0.3rem;
       font-weight: bold;
     }
-
     #orderForm input,
     #orderForm textarea {
       width: 100%;
@@ -32,12 +29,10 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
-
     #orderForm textarea {
       min-height: 80px;
       resize: vertical;
     }
-
     #orderForm button {
       padding: 0.6rem 1.2rem;
       background-color: #003366;
@@ -48,7 +43,6 @@
       font-size: 1rem;
       max-width: 150px;
     }
-
     #orderForm button:hover {
       background-color: #0055aa;
     }
@@ -80,10 +74,11 @@
       <label><span data-i18n="delivery"></span><input type="text" name="delivery" required /></label>
       <label><span data-i18n="date"></span><input type="datetime-local" name="datetime" required /></label>
       <label><span data-i18n="note"></span><textarea name="note"></textarea></label>
-      <button type="submit" data-i18n="submit"></button>
+      <button type="submit" data-i18n="submit">Odoslať</button>
     </form>
     <div id="thankYouMessage" style="display:none;" data-i18n="thank_you"></div>
   </main>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBxD-bUWAFmlAxzrgvdl5meMc9GjIDz0XA",
@@ -94,7 +89,31 @@
       appId: "1:960895665450:web:52d8efb64b76c2392602f5"
     };
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const nameField = document.querySelector('input[name="name"]');
+        const emailField = document.querySelector('input[name="email"]');
+        const phoneField = document.querySelector('input[name="phone_number"]');
+
+        emailField.value = user.email;
+        nameField.value = user.displayName || "";
+
+        try {
+          const userDoc = await db.collection("users").doc(user.uid).get();
+          const userData = userDoc.data();
+          if (userData?.phone) {
+            phoneField.value = userData.phone;
+          }
+        } catch (e) {
+          console.warn("Nepodarilo sa načítať telefónne číslo");
+        }
+      }
+    });
   </script>
+
   <script src="order.js"></script>
   <script src="lang.js"></script>
 </body>
