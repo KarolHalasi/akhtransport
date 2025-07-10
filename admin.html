@@ -26,18 +26,6 @@
       margin-bottom: 1.5em;
       justify-content: center;
     }
-    .filters {
-      display: flex;
-      gap: 1em;
-      flex-wrap: wrap;
-      margin-bottom: 1em;
-    }
-    .filters input,
-    .filters select {
-      padding: 0.4em;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
     .order-card, .message-card {
       border: 1px solid #ddd;
       border-radius: 8px;
@@ -59,9 +47,10 @@
       padding: 0.5em 1em;
       border-radius: 6px;
       cursor: pointer;
+      margin-right: 0.5em;
     }
     .save-btn:hover { background-color: #005fa3; }
-    .delete-btn { background-color: #cc0000; margin-top: 0.5em; }
+    .delete-btn { background-color: #cc0000; }
     .delete-btn:hover { background-color: #a80000; }
     .logout-btn {
       background-color: #555;
@@ -75,6 +64,8 @@
     .lang-switcher { text-align: center; margin-top: 2em; }
     .hidden { display: none; }
   </style>
+
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -94,19 +85,31 @@
 
     <div id="ordersSection">
       <h3>Objednávky</h3>
-      <div class="filters">
+
+      <div style="display: flex; flex-wrap: wrap; gap: 1em; margin-bottom: 1em;">
         <label>Dátum od: <input type="date" id="filterDateFrom"></label>
         <label>Dátum do: <input type="date" id="filterDateTo"></label>
         <label>Stav:
           <select id="filterStatus">
-            <option value="">Všetky</option>
+            <option value="">—</option>
             <option value="Čaká">Čaká</option>
             <option value="Vybavuje sa">Vybavuje sa</option>
             <option value="Doručené">Doručené</option>
           </select>
         </label>
-        <button onclick="loadOrders()">Filtrovať</button>
+        <label>Akceptácia ceny:
+          <select id="filterAccepted">
+            <option value="">—</option>
+            <option value="true">Áno</option>
+            <option value="false">Nie</option>
+          </select>
+        </label>
+        <label>Bez ceny:
+          <input type="checkbox" id="filterNoPrice">
+        </label>
+        <button onclick="loadOrders()">Použiť filtre</button>
       </div>
+
       <button onclick="exportOrdersCSV()">Export objednávok do CSV</button>
       <div id="ordersList">Načítavam objednávky...</div>
     </div>
