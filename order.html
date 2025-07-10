@@ -3,26 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="order_title">Objednať prepravu</title>
+  <title>Objednať prepravu</title>
   <link rel="stylesheet" href="style.css" />
+
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
   <style>
-    #orderForm label { display: block; margin-bottom: 1rem; }
-    #orderForm label span { display: block; margin-bottom: 0.3rem; font-weight: bold; }
-    #orderForm input, #orderForm textarea {
-      width: 100%; max-width: 400px;
-      padding: 0.5rem; font-size: 1rem;
-      border: 1px solid #ccc; border-radius: 4px;
+    form label {
+      display: block;
+      margin-bottom: 1rem;
     }
-    #orderForm textarea { min-height: 80px; resize: vertical; }
-    #orderForm button {
-      padding: 0.6rem 1.2rem; background-color: #003366;
-      color: white; border: none; border-radius: 4px;
-      cursor: pointer; font-size: 1rem; max-width: 150px;
+
+    form label span {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: bold;
     }
-    #orderForm button:hover { background-color: #0055aa; }
+
+    form input,
+    form textarea {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    form textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    form button {
+      padding: 0.6rem 1.2rem;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #0055aa;
+    }
   </style>
 </head>
 <body>
@@ -30,9 +56,9 @@
     <a href="index.html"><img src="logo.png" alt="AKH Transport logo" class="logo" /></a>
     <nav>
       <ul>
-        <li><a href="index.html" data-i18n="home"></a></li>
-        <li><a href="order.html" data-i18n="order"></a></li>
-        <li><a href="dashboard.html" data-i18n="dashboard"></a></li>
+        <li><a href="index.html">Domov</a></li>
+        <li><a href="order.html">Objednávka</a></li>
+        <li><a href="dashboard.html">Môj účet</a></li>
       </ul>
     </nav>
     <div class="lang-switcher">
@@ -41,24 +67,25 @@
       <button onclick="setLanguage('en')">EN</button>
     </div>
   </header>
+
   <main>
-    <h1 data-i18n="order_title">Objednať prepravu</h1>
+    <h1>Objednať prepravu</h1>
     <form id="orderForm">
-      <label><span data-i18n="name">Meno</span><input type="text" name="name" required /></label>
-      <label><span data-i18n="email">Email</span><input type="email" name="email" required /></label>
-      <label><span data-i18n="phone_number">Telefón</span><input type="tel" name="phone_number" required /></label>
-      <label><span data-i18n="pickup">Miesto vyzdvihnutia</span><input type="text" name="pickup" required /></label>
-      <label><span data-i18n="delivery">Miesto doručenia</span><input type="text" name="delivery" required /></label>
-      <label><span data-i18n="date">Dátum a čas</span><input type="datetime-local" name="datetime" required /></label>
-      <label><span data-i18n="note">Poznámka</span><textarea name="note"></textarea></label>
-      <button type="submit" data-i18n="submit">Odoslať</button>
+      <label><span>Meno</span><input type="text" name="name" required /></label>
+      <label><span>Email</span><input type="email" name="email" required /></label>
+      <label><span>Telefón</span><input type="tel" name="phone_number" required /></label>
+      <label><span>Vyzdvihnutie</span><input type="text" name="pickup" required /></label>
+      <label><span>Doručenie</span><input type="text" name="delivery" required /></label>
+      <label><span>Dátum a čas</span><input type="datetime-local" name="datetime" required /></label>
+      <label><span>Poznámka</span><textarea name="note"></textarea></label>
+      <button type="submit">Odoslať objednávku</button>
     </form>
-    <div id="thankYouMessage" style="display:none;" data-i18n="thank_you"></div>
+    <div id="thankYouMessage" style="display:none;">Ďakujeme za vašu objednávku.</div>
   </main>
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBxD-bUWAFmlAxzrgvdl5meMc9GjIDz0XA",
+      apiKey: "AIzaSyBFvKq4Bx4b33ZZTBjTEfB1x6z10d-pd2A",
       authDomain: "akhtransapp.firebaseapp.com",
       projectId: "akhtransapp",
       storageBucket: "akhtransapp.appspot.com",
@@ -66,33 +93,57 @@
       appId: "1:960895665450:web:52d8efb64b76c2392602f5"
     };
     firebase.initializeApp(firebaseConfig);
+
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Po načítaní DOM a Firebase auth
     document.addEventListener("DOMContentLoaded", () => {
-      auth.onAuthStateChanged(async (user) => {
-        if (!user) return; // anonymní môžu tiež objednávať
+      auth.onAuthStateChanged(async user => {
+        if (user) {
+          const form = document.forms["orderForm"];
+          form.name.value = user.displayName || "";
+          form.email.value = user.email || "";
 
-        const nameInput = document.querySelector('input[name="name"]');
-        const emailInput = document.querySelector('input[name="email"]');
-        const phoneInput = document.querySelector('input[name="phone_number"]');
+          try {
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (userDoc.exists) {
+              const userData = userDoc.data();
+              form.phone_number.value = userData.phone || "";
+            }
+          } catch (e) {
+            console.warn("Nepodarilo sa načítať telefónne číslo.");
+          }
+        }
+      });
 
-        emailInput.value = user.email || "";
-        nameInput.value = user.displayName || "";
+      document.getElementById("orderForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const form = e.target;
+
+        const newOrder = {
+          name: form.name.value,
+          email: form.email.value,
+          phone: form.phone_number.value,
+          pickup: form.pickup.value,
+          delivery: form.delivery.value,
+          date: form.datetime.value,
+          note: form.note.value,
+          status: "Čaká",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          userEmail: form.email.value
+        };
 
         try {
-          const userDoc = await db.collection("users").doc(user.uid).get();
-          const data = userDoc.data();
-          if (data?.phone) phoneInput.value = data.phone;
+          await db.collection("orders").add(newOrder);
+          form.style.display = "none";
+          document.getElementById("thankYouMessage").style.display = "block";
         } catch (err) {
-          console.warn("⚠️ Telefónne číslo sa nepodarilo načítať:", err.message);
+          alert("Chyba pri ukladaní objednávky: " + err.message);
         }
       });
     });
   </script>
 
-  <script src="order.js"></script>
   <script src="lang.js"></script>
 </body>
 </html>
