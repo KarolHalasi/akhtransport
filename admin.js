@@ -32,21 +32,29 @@ async function loadOrders() {
   const accepted = document.getElementById("filterAccepted")?.value;
 
   try {
-    let ref = db.collection("orders");
-    if (fromDate) ref = ref.where("date", ">=", fromDate);
-    if (toDate) ref = ref.where("date", "<=", toDate + "\uFFFF");
-    if (status) ref = ref.where("status", "==", status);
-    if (accepted === "true") ref = ref.where("acceptedByUser", "==", true);
-    if (accepted === "false") ref = ref.where("acceptedByUser", "!=", true);
+    const snapshot = await db.collection("orders").orderBy("date", "desc").get();
+    let filteredDocs = snapshot.docs;
 
-    const snapshot = await ref.orderBy("date", "desc").get();
+    filteredDocs = filteredDocs.filter(doc => {
+      const data = doc.data();
+      const orderDate = data.date || "";
 
-    if (snapshot.empty) {
+      const matchFrom = !fromDate || orderDate >= fromDate;
+      const matchTo = !toDate || orderDate <= toDate + "\uFFFF";
+      const matchStatus = !status || data.status === status;
+      const matchAccepted =
+        accepted === "true" ? data.acceptedByUser === true :
+        accepted === "false" ? data.acceptedByUser !== true : true;
+
+      return matchFrom && matchTo && matchStatus && matchAccepted;
+    });
+
+    if (filteredDocs.length === 0) {
       list.innerHTML = "<p>Žiadne objednávky nevyhovujú filtrom.</p>";
       return;
     }
 
-    snapshot.forEach(doc => {
+    filteredDocs.forEach(doc => {
       const data = doc.data();
       const card = document.createElement("div");
       card.className = "order-card";
