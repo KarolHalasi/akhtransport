@@ -217,20 +217,33 @@
       }
     }
 
-    async function editProfile() {
-      const user = auth.currentUser;
-      if (!user) return;
+   async function editProfile() {
+  const user = auth.currentUser;
+  if (!user) return;
 
-      const newName = prompt("Zadajte nové meno:", user.displayName || "");
-      const newPhone = prompt("Zadajte nové telefónne číslo:");
+  const newName = prompt("Zadajte nové meno:", user.displayName || "");
+  const newPhone = prompt("Zadajte nové telefónne číslo:");
 
-      if (newName) {
-        await user.updateProfile({ displayName: newName });
-        await db.collection("users").doc(user.uid).set({ phone: newPhone }, { merge: true });
-        alert("Profil bol aktualizovaný.");
-        location.reload();
-      }
+  if (newName && newPhone) {
+    try {
+      // Update Firebase Auth profil
+      await user.updateProfile({ displayName: newName });
+
+      // Update Firestore používateľa
+      await db.collection("users").doc(user.uid).set({
+        phone: newPhone
+      }, { merge: true });
+
+      // Priamo aktualizuj údaje v DOMe
+      document.getElementById("userName").textContent = newName;
+      document.getElementById("userPhone").textContent = "Telefónne číslo: " + newPhone;
+
+      alert("Profil bol aktualizovaný.");
+    } catch (err) {
+      alert("Chyba pri ukladaní profilu: " + err.message);
     }
+  }
+}
   </script>
 
   <script src="lang.js"></script>
